@@ -92,32 +92,13 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     
-    edge_stack = util.Stack()
-    been_set = set()
-    
-    first_loc = problem.getStartState()
-    
-    edge_stack.push(first_loc)
-    
-    
-    
-    answer = []
+    curr_state = problem.getStartState()
+    curr_succ = problem.getSuccessors(problem.getStartState())
 
-    
-    while not edge_stack.isEmpty():
-        current_loc = edge_stack.pop()
-        
-        print(current_loc)
-        
-        if problem.isGoalState(current_loc):
-            return answer
-        
-        been_set.add(current_loc)
-        
-        
-        for successor_dir, successor_loc, successor_cost in problem.getSuccessors(current_loc):
-            if successor_loc not in been_set:
-                edge_stack.push(successor_loc)        
+    print(f"CURRENT:\t{curr_state}")
+    print(f"SUCC0:\t{curr_succ[0]}")
+
+    print()       
         
     #util.raiseNotDefined()
 
