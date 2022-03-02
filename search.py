@@ -87,238 +87,119 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    e = Directions.EAST
-    w = Directions.WEST
     
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    start_node = (problem.getStartState(), "start", 0)
     
-    start_state = problem.getStartState()
-    curr_state = start_state
-    curr_succ = problem.getSuccessors(start_state)
+    dfs_stack = util.Stack()
+    been_state_set = set()
+    been_state_set.add(start_node[0])
 
-    print(f"CURRENT:\t{start_state}")
-    print(f"SUCC0:\t{curr_succ[0][0]}")
-    
-    poss_stack = util.Stack()
-    been_set = set()
-    been_set.add(start_state)
-    
-    route = []
-    curr_route = []
-    curr_cost = 0
+    for successor in problem.getSuccessors(start_node[0]):
+        dfs_stack.push((successor[0], [successor[1]], successor[2]))
+
+    current_node = dfs_stack.pop()
+
+    while not problem.isGoalState(current_node[0]):
+        current_state = current_node[0]
+        current_route = current_node[1]
+        current_cost = current_node[2]
+
+        if not (current_state in been_state_set):
+            been_state_set.add(current_state)
+            current_successors = problem.getSuccessors(current_state)
+            for successor_node in current_successors:
+                if not (successor_node[0] in been_state_set):
+
+                    successor_route = current_route + [successor_node[1]]
+
+                    successor_cost = current_cost + successor_node[2]
+                    dfs_stack.push((successor_node[0], successor_route, successor_cost))
         
-    for succ in curr_succ:
-        succ_route = []
-        succ_route.append(succ[1])
-        succ_cost = succ[2]
-        print(f"SUCCROUTE:\t{succ_route}")
-        poss_stack.push((succ, succ_route, succ_cost))
-        print(f"NEXT SUCCS:\t{succ}\n")
-
-    while not problem.isGoalState(curr_state[0]):
-        (curr_state, curr_route, curr_cost) = poss_stack.pop()
-        print(f"CURRENT STATE:\t{curr_state}")
-        print(f"ROUTE:\t{curr_route}")
-        print(f"BEEN:\t{been_set}")
-                
-        if problem.isGoalState(curr_state[0]) or (curr_state[0] in been_set):
-            continue
-        else:
-            been_set.add(curr_state[0])
-            curr_succ = problem.getSuccessors(curr_state[0])
-            for succ in curr_succ:
-                if not succ[0] in been_set:
-                    print(f"NEXT SUCCS:\t{succ}")
-                    succ_route = curr_route + [succ[1]]
-                    succ_cost = curr_cost + succ[2]
-                    print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
-                    print(f"NEXT SUCCS ROUTE:\t{succ_route}")
-                    poss_stack.push((succ, succ_route, succ_cost))
-                    
-        print("\n")
+        current_node = dfs_stack.pop()
                             
-    # while not poss_stack.isEmpty():
-    #     a_succ = poss_stack.pop()
-    #     print(a_succ)
-    route2return = []
-    
-    for direc in curr_route:
-        if direc == 'North':
-            route2return.append(n)
-        elif direc == 'South':
-            route2return.append(s)
-        elif direc == 'East':
-            route2return.append(e)
-        else:
-            route2return.append(w)
+    route_to_return = current_node[1]
 
-    #util.raiseNotDefined()
-    print(route2return)
-    print(f"COST---{curr_cost}")
-    
-    return route2return
-    
-    #util.raiseNotDefined()
-    
-    # from game import Directions
-    # n = Directions.NORTH
-    # s = Directions.SOUTH
-    # e = Directions.EAST
-    # w = Directions.WEST
-    
-    # print("Start:", problem.getStartState())
-    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    
-    # start_state = problem.getStartState()
-    # curr_state = start_state
-    # curr_succ = problem.getSuccessors(start_state)
-
-    # print(f"CURRENT:\t{start_state}")
-    # print(f"SUCC0:\t{curr_succ[0][0]}")
-    
-    # poss_stack = util.Stack()
-    # been_set = set()
-    # been_set.add(start_state)
-    
-    # route = []
-    # curr_route = []
-        
-    # for succ in curr_succ:
-    #     succ_route = []
-    #     succ_route.append(succ[1])
-    #     print(f"SUCCROUTE:\t{succ_route}")
-    #     poss_stack.push((succ, succ_route))
-    #     print(f"NEXT SUCCS:\t{succ}\n")
-
-    # while problem.isGoalState(curr_state[0]):
-    #     (curr_state, curr_route) = poss_stack.pop()
-    #     print(f"CURRENT STATE:\t{curr_state}")
-    #     print(f"ROUTE:\t{curr_route}")
-    #     print(f"BEEN:\t{been_set}")
-                
-    #     if problem.isGoalState(curr_state[0]) or (curr_state[0] in been_set):
-    #         continue
-    #     else:
-    #         been_set.add(curr_state[0])
-    #         curr_succ = problem.getSuccessors(curr_state[0])
-    #         for succ in curr_succ:
-    #             if not succ[0] in been_set:
-    #                 print(f"NEXT SUCCS:\t{succ}")
-    #                 succ_route = curr_route + [succ[1]]
-    #                 print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
-    #                 print(f"NEXT SUCCS ROUTE:\t{succ_route}")
-    #                 poss_stack.push((succ, succ_route))
-                    
-    #     print("\n")
-                            
-    # # while not poss_stack.isEmpty():
-    # #     a_succ = poss_stack.pop()
-    # #     print(a_succ)
-    # route2return = []
-    
-    # for direc in curr_route:
-    #     if direc == 'North':
-    #         route2return.append(n)
-    #     elif direc == 'South':
-    #         route2return.append(s)
-    #     elif direc == 'East':
-    #         route2return.append(e)
-    #     else:
-    #         route2return.append(w)
-
-    # #util.raiseNotDefined()
-    # print(route2return)
-    
-    # return route2return
+    return route_to_return
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     
-    from game import Directions
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    e = Directions.EAST
-    w = Directions.WEST
+    start_node = (problem.getStartState(), "start", 0)
     
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    
-    start_state = problem.getStartState()
-    curr_state = start_state
-    curr_succ = problem.getSuccessors(start_state)
+    bfs_queue = util.Queue()
+    been_state_set = set()
+    been_state_set.add(start_node[0])
 
-    print(f"CURRENT:\t{start_state}")
-    print(f"SUCC0:\t{curr_succ[0][0]}")
-    
-    poss_queue = util.Queue()
-    been_set = set()
-    been_set.add(start_state)
-    
-    route = []
-    curr_route = []
+    for successor in problem.getSuccessors(start_node[0]):
+        bfs_queue.push((successor[0], [successor[1]], successor[2]))
+
+    current_node = bfs_queue.pop()
+
+    while not problem.isGoalState(current_node[0]):
+        print(current_node)
+        current_state = current_node[0]
+        current_route = current_node[1]
+        current_cost = current_node[2]
+
+        if not (current_state in been_state_set):
+            been_state_set.add(current_state)
+            current_successors = problem.getSuccessors(current_state)
+            for successor_node in current_successors:
+                if not (successor_node[0] in been_state_set):
+
+                    successor_route = current_route + [successor_node[1]]
+
+                    successor_cost = current_cost + successor_node[2]
+                    bfs_queue.push((successor_node[0], successor_route, successor_cost))
         
-    for succ in curr_succ:
-        succ_route = []
-        succ_route.append(succ[1])
-        print(f"SUCCROUTE:\t{succ_route}")
-        poss_queue.push((succ, succ_route))
-        print(f"NEXT SUCCS:\t{succ}\n")
-
-    while not problem.isGoalState(curr_state[0]):
-        (curr_state, curr_route) = poss_queue.pop()
-        print(f"CURRENT STATE:\t{curr_state}")
-        print(f"ROUTE:\t{curr_route}")
-        print(f"BEEN:\t{been_set}")
-                
-        if problem.isGoalState(curr_state[0]) or (curr_state[0] in been_set):
-            continue
-        else:
-            been_set.add(curr_state[0])
-            curr_succ = problem.getSuccessors(curr_state[0])
-            for succ in curr_succ:
-                if not succ[0] in been_set:
-                    print(f"NEXT SUCCS:\t{succ}")
-                    succ_route = curr_route + [succ[1]]
-                    print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
-                    print(f"NEXT SUCCS ROUTE:\t{succ_route}")
-                    poss_queue.push((succ, succ_route))
-                    
-        print("\n")
+        current_node = bfs_queue.pop()
                             
-    # while not poss_queue.isEmpty():
-    #     a_succ = poss_queue.pop()
-    #     print(a_succ)
-    route2return = []
-    
-    for direc in curr_route:
-        if direc == 'North':
-            route2return.append(n)
-        elif direc == 'South':
-            route2return.append(s)
-        elif direc == 'East':
-            route2return.append(e)
-        else:
-            route2return.append(w)
+    route_to_return = current_node[1]
 
-    #util.raiseNotDefined()
-    print(route2return)
-    
-    return route2return
+    return route_to_return
     
     #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    start_node = (problem.getStartState(), "start", 0)
+    
+    ucs_queue = util.PriorityQueue()
+    been_state_set = set()
+    been_state_set.add(start_node[0])
+
+    for successor in problem.getSuccessors(start_node[0]):
+        ucs_queue.update((successor[0], [successor[1]], successor[2]), successor[2])
+
+    current_node = ucs_queue.pop()
+
+    while not problem.isGoalState(current_node[0]):
+        print(current_node)
+        current_state = current_node[0]
+        current_route = current_node[1]
+        current_cost = current_node[2]
+
+        if not (current_state in been_state_set):
+            been_state_set.add(current_state)
+            current_successors = problem.getSuccessors(current_state)
+            for successor_node in current_successors:
+                if not (successor_node[0] in been_state_set):
+
+                    successor_route = current_route + [successor_node[1]]
+
+                    successor_cost = current_cost + successor_node[2]
+                    ucs_queue.update((successor_node[0], successor_route, successor_cost), successor_cost)
+        
+        current_node = ucs_queue.pop()
+                            
+    route_to_return = current_node[1]
+
+    return route_to_return
+    
+    # util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -330,7 +211,45 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    start_node = (problem.getStartState(), "start", 0)
+    
+    ucs_queue = util.PriorityQueue()
+    been_state_set = set()
+    been_state_set.add(start_node[0])
+
+    for successor in problem.getSuccessors(start_node[0]):
+        astar_priority = successor[2]+heuristic(successor[0], problem)
+        ucs_queue.update((successor[0], [successor[1]], successor[2]), astar_priority)
+
+    current_node = ucs_queue.pop()
+
+    while not problem.isGoalState(current_node[0]):
+        print(current_node)
+        current_state = current_node[0]
+        current_route = current_node[1]
+        current_cost = current_node[2]
+
+        if not (current_state in been_state_set):
+            been_state_set.add(current_state)
+            current_successors = problem.getSuccessors(current_state)
+            for successor_node in current_successors:
+                if not (successor_node[0] in been_state_set):
+
+                    successor_route = current_route + [successor_node[1]]
+
+                    successor_cost = current_cost + successor_node[2]
+
+                    astar_priority = successor_cost + heuristic(successor_node[0], problem)
+                    ucs_queue.update((successor_node[0], successor_route, successor_cost), astar_priority)
+        
+        current_node = ucs_queue.pop()
+                            
+    route_to_return = current_node[1]
+
+    return route_to_return
+    
+    # util.raiseNotDefined()
 
 
 # Abbreviations
