@@ -98,6 +98,7 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     
     start_state = problem.getStartState()
+    curr_state = start_state
     curr_succ = problem.getSuccessors(start_state)
 
     print(f"CURRENT:\t{start_state}")
@@ -108,16 +109,19 @@ def depthFirstSearch(problem):
     been_set.add(start_state)
     
     route = []
+    curr_route = []
+    curr_cost = 0
         
     for succ in curr_succ:
         succ_route = []
         succ_route.append(succ[1])
+        succ_cost = succ[2]
         print(f"SUCCROUTE:\t{succ_route}")
-        poss_stack.push((succ, succ_route))
+        poss_stack.push((succ, succ_route, succ_cost))
         print(f"NEXT SUCCS:\t{succ}\n")
 
-    while problem.isGoalState(curr_state[0]):
-        (curr_state, curr_route) = poss_stack.pop()
+    while not problem.isGoalState(curr_state[0]):
+        (curr_state, curr_route, curr_cost) = poss_stack.pop()
         print(f"CURRENT STATE:\t{curr_state}")
         print(f"ROUTE:\t{curr_route}")
         print(f"BEEN:\t{been_set}")
@@ -131,9 +135,10 @@ def depthFirstSearch(problem):
                 if not succ[0] in been_set:
                     print(f"NEXT SUCCS:\t{succ}")
                     succ_route = curr_route + [succ[1]]
+                    succ_cost = curr_cost + succ[2]
                     print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
                     print(f"NEXT SUCCS ROUTE:\t{succ_route}")
-                    poss_stack.push((succ, succ_route))
+                    poss_stack.push((succ, succ_route, succ_cost))
                     
         print("\n")
                             
@@ -154,8 +159,83 @@ def depthFirstSearch(problem):
 
     #util.raiseNotDefined()
     print(route2return)
+    print(f"COST---{curr_cost}")
     
     return route2return
+    
+    #util.raiseNotDefined()
+    
+    # from game import Directions
+    # n = Directions.NORTH
+    # s = Directions.SOUTH
+    # e = Directions.EAST
+    # w = Directions.WEST
+    
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    
+    # start_state = problem.getStartState()
+    # curr_state = start_state
+    # curr_succ = problem.getSuccessors(start_state)
+
+    # print(f"CURRENT:\t{start_state}")
+    # print(f"SUCC0:\t{curr_succ[0][0]}")
+    
+    # poss_stack = util.Stack()
+    # been_set = set()
+    # been_set.add(start_state)
+    
+    # route = []
+    # curr_route = []
+        
+    # for succ in curr_succ:
+    #     succ_route = []
+    #     succ_route.append(succ[1])
+    #     print(f"SUCCROUTE:\t{succ_route}")
+    #     poss_stack.push((succ, succ_route))
+    #     print(f"NEXT SUCCS:\t{succ}\n")
+
+    # while problem.isGoalState(curr_state[0]):
+    #     (curr_state, curr_route) = poss_stack.pop()
+    #     print(f"CURRENT STATE:\t{curr_state}")
+    #     print(f"ROUTE:\t{curr_route}")
+    #     print(f"BEEN:\t{been_set}")
+                
+    #     if problem.isGoalState(curr_state[0]) or (curr_state[0] in been_set):
+    #         continue
+    #     else:
+    #         been_set.add(curr_state[0])
+    #         curr_succ = problem.getSuccessors(curr_state[0])
+    #         for succ in curr_succ:
+    #             if not succ[0] in been_set:
+    #                 print(f"NEXT SUCCS:\t{succ}")
+    #                 succ_route = curr_route + [succ[1]]
+    #                 print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
+    #                 print(f"NEXT SUCCS ROUTE:\t{succ_route}")
+    #                 poss_stack.push((succ, succ_route))
+                    
+    #     print("\n")
+                            
+    # # while not poss_stack.isEmpty():
+    # #     a_succ = poss_stack.pop()
+    # #     print(a_succ)
+    # route2return = []
+    
+    # for direc in curr_route:
+    #     if direc == 'North':
+    #         route2return.append(n)
+    #     elif direc == 'South':
+    #         route2return.append(s)
+    #     elif direc == 'East':
+    #         route2return.append(e)
+    #     else:
+    #         route2return.append(w)
+
+    # #util.raiseNotDefined()
+    # print(route2return)
+    
+    # return route2return
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -178,21 +258,22 @@ def breadthFirstSearch(problem):
     print(f"CURRENT:\t{start_state}")
     print(f"SUCC0:\t{curr_succ[0][0]}")
     
-    poss_stack = util.Queue()
+    poss_queue = util.Queue()
     been_set = set()
     been_set.add(start_state)
     
     route = []
+    curr_route = []
         
     for succ in curr_succ:
         succ_route = []
         succ_route.append(succ[1])
         print(f"SUCCROUTE:\t{succ_route}")
-        poss_stack.push((succ, succ_route))
+        poss_queue.push((succ, succ_route))
         print(f"NEXT SUCCS:\t{succ}\n")
 
     while not problem.isGoalState(curr_state[0]):
-        (curr_state, curr_route) = poss_stack.pop()
+        (curr_state, curr_route) = poss_queue.pop()
         print(f"CURRENT STATE:\t{curr_state}")
         print(f"ROUTE:\t{curr_route}")
         print(f"BEEN:\t{been_set}")
@@ -208,12 +289,12 @@ def breadthFirstSearch(problem):
                     succ_route = curr_route + [succ[1]]
                     print(f"NEXT SUCCS STUFF:\t{curr_route}\t{succ[1]}")
                     print(f"NEXT SUCCS ROUTE:\t{succ_route}")
-                    poss_stack.push((succ, succ_route))
+                    poss_queue.push((succ, succ_route))
                     
         print("\n")
                             
-    # while not poss_stack.isEmpty():
-    #     a_succ = poss_stack.pop()
+    # while not poss_queue.isEmpty():
+    #     a_succ = poss_queue.pop()
     #     print(a_succ)
     route2return = []
     
